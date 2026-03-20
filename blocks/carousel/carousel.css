@@ -1,0 +1,284 @@
+/* ==========================================================================
+   Carousel Block — Adobe Edge Delivery Services
+   ========================================================================== */
+
+/* ── Container ─────────────────────────────────────────────────────────── */
+.carousel {
+  --carousel-height: 480px;
+  --carousel-radius: 1rem;
+  --carousel-nav-size: 44px;
+  --carousel-dot-size: 10px;
+  --carousel-dot-active-width: 28px;
+  --carousel-transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+  --carousel-overlay: linear-gradient(
+    to right,
+    rgb(0 0 0 / 55%) 0%,
+    rgb(0 0 0 / 0%) 50%
+  );
+
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--carousel-radius);
+  height: var(--carousel-height);
+  background: #0a0a0a;
+  box-shadow: 0 24px 64px rgb(0 0 0 / 28%);
+  outline: none;
+
+  /* Keyboard focus ring */
+  &:focus-visible {
+    outline: 3px solid #4a90e2;
+    outline-offset: 3px;
+  }
+}
+
+/* ── Track ──────────────────────────────────────────────────────────────── */
+.carousel-track {
+  display: flex;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transition: transform var(--carousel-transition);
+  will-change: transform;
+}
+
+/* ── Slides ─────────────────────────────────────────────────────────────── */
+.carousel-slide {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  min-width: 100%;
+  height: 100%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Image fills the full slide */
+.carousel-slide-image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.carousel-slide-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.8s ease;
+}
+
+.carousel-slide.is-active .carousel-slide-image img {
+  transform: scale(1.04);
+}
+
+/* Gradient overlay so text pops */
+.carousel-slide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--carousel-overlay);
+}
+
+/* Slide text content */
+.carousel-slide-content {
+  position: relative;
+  z-index: 2;
+  align-self: end;
+  padding: 2.5rem 3rem;
+  color: #fff;
+  max-width: 520px;
+
+  /* Entrance animation */
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease 0.3s, transform 0.5s ease 0.3s;
+}
+
+.carousel-slide.is-active .carousel-slide-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Typography inside slide */
+.carousel-slide-content h1,
+.carousel-slide-content h2,
+.carousel-slide-content h3 {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 0.6rem;
+  letter-spacing: -0.02em;
+}
+
+.carousel-slide-content p {
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
+  line-height: 1.6;
+  margin: 0 0 1.2rem;
+  opacity: 0.88;
+}
+
+.carousel-slide-content a {
+  display: inline-block;
+  padding: 0.6rem 1.4rem;
+  background: #fff;
+  color: #0a0a0a;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-decoration: none;
+  border-radius: 50px;
+  letter-spacing: 0.02em;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+}
+
+.carousel-slide-content a:hover {
+  background: #4a90e2;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* ── Navigation Buttons ─────────────────────────────────────────────────── */
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--carousel-nav-size);
+  height: var(--carousel-nav-size);
+  border: 1.5px solid rgb(255 255 255 / 30%);
+  border-radius: 50%;
+  background: rgb(0 0 0 / 35%);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background 0.2s, border-color 0.2s, transform 0.2s, opacity 0.2s;
+
+  /* Remove default button styles */
+  appearance: none;
+  padding: 0;
+}
+
+.carousel-nav svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.carousel-nav:hover:not(:disabled) {
+  background: rgb(255 255 255 / 20%);
+  border-color: rgb(255 255 255 / 60%);
+  transform: translateY(-50%) scale(1.08);
+}
+
+.carousel-nav:focus-visible {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+/* No disabled state — carousel loops infinitely */
+
+.carousel-nav-prev {
+  left: 1.25rem;
+}
+
+.carousel-nav-next {
+  right: 1.25rem;
+}
+
+/* ── Dot Indicators ─────────────────────────────────────────────────────── */
+.carousel-indicators {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 50%;
+  z-index: 10;
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transform: translateX(-50%);
+}
+
+.carousel-indicator {
+  width: var(--carousel-dot-size);
+  height: var(--carousel-dot-size);
+  border-radius: 50px;
+  background: rgb(255 255 255 / 40%);
+  cursor: pointer;
+  transition: width 0.35s ease, background 0.25s;
+}
+
+.carousel-indicator:hover {
+  background: rgb(255 255 255 / 70%);
+}
+
+.carousel-indicator.is-active {
+  width: var(--carousel-dot-active-width);
+  background: #fff;
+}
+
+.carousel-indicator:focus-visible {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (width <= 768px) {
+  .carousel {
+    --carousel-height: 360px;
+    border-radius: 0.5rem;
+  }
+
+  .carousel-slide-content {
+    padding: 1.5rem 1.25rem;
+    max-width: 100%;
+  }
+
+  .carousel-slide-content h1,
+  .carousel-slide-content h2,
+  .carousel-slide-content h3 {
+    font-size: 1.25rem;
+  }
+
+  .carousel-nav-prev {
+    left: 0.75rem;
+  }
+
+  .carousel-nav-next {
+    right: 0.75rem;
+  }
+}
+
+@media (width <= 480px) {
+  .carousel {
+    --carousel-height: 280px;
+  }
+
+  .carousel-slide-content p {
+    display: none;
+  }
+
+  .carousel-nav {
+    --carousel-nav-size: 36px;
+  }
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .carousel-track {
+    transition: none;
+  }
+
+  .carousel-slide-content {
+    transition: opacity 0.2s ease;
+  }
+
+  .carousel-slide-image img {
+    transition: none;
+  }
+}
